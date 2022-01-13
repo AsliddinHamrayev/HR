@@ -18,6 +18,9 @@
           <h3 class="list__title">Department</h3>
           <h3 class="list__title">Actions</h3>
         </div>
+        <div class="loader" v-if="isLoading">
+          <base-loading></base-loading>
+        </div>
         <transition-group name="userAnimation">
           <div v-for="user in pageOfItems" :key="user.id">
             <transition name="userEnter">
@@ -191,7 +194,16 @@ export default {
     show(num) {
       this.page = num;
       this.pageSize = num;
-      this.$emit('show-number')
+      this.loadUserss()
+    },
+
+    async loadUserss() {
+      this.isLoading = true;
+      await this.$store.dispatch("loadUsers").then((res) => {
+        this.items = res;
+      });
+      console.log(this.items);
+      this.isLoading = false;
     },
 
     submit(data) {

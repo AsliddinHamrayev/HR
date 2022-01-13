@@ -14,15 +14,16 @@
         <delete-modal @delete-all="deleteAll" @close-modal="close"></delete-modal>
       </base-dialog>
     </transition>
-
-    <main id="main">
-      <TheHeader @open-filter="openFilter" @delete-all="openDeleteModal"/>
-      <div class="loader" v-if="isLoading">
-        <base-loading></base-loading>
-      </div>
-      <user-card :values="values" :items="items" v-else-if="noUser" @remove-user="removeUser" @show-number="show"></user-card>
-      <h1 v-else>No Users found</h1>
-    </main>
+    <transition name="main">
+      <main id="main">
+        <TheHeader @open-filter="openFilter" @delete-all="openDeleteModal"/>
+        <div class="loader" v-if="isLoading">
+          <base-loading></base-loading>
+        </div>
+        <user-card :values="values" :items="items" v-else-if="noUser" @remove-user="removeUser"></user-card>
+        <h1 v-else>No Users found</h1>
+      </main>
+    </transition>
   </div>
 </template>
 
@@ -77,11 +78,6 @@ export default {
       console.log(data)
       this.isFilter = false;
     },
-
-    show() {
-      this.loadUsers()
-    },
-
     async loadUsers() {
       this.isLoading = true;
       await this.$store.dispatch("loadUsers").then((res) => {
@@ -159,6 +155,23 @@ label {
 .modal-leave-active {
   animation: ModalLeave 1s ease-in;
 }
+
+.main-enter-active {
+  animation: MainEnter 1s ease-out;
+}
+
+.main-leave-active {
+  animation: MainEnter 1s ease-in;
+}
+
+@keyframes MainEnter {
+  from{
+    width: 1445px;
+  }
+  to{
+    width: 1000px;
+  }
+}
 @keyframes ModalEnter {
   from {
     opacity: 0;
@@ -170,6 +183,8 @@ label {
     transform: translateX(0);
   }
 }
+
+
 
 @keyframes ModalLeave {
   from {
